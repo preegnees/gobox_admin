@@ -1,37 +1,40 @@
 package server
 
 import (
-	mdl "jwt/pkg/models"
-	hdl "jwt/pkg/handler"
-	srv "jwt/pkg/service"
-	srg "jwt/pkg/storage"
+	hs "jwt/pkg/handlers"
 
 	"github.com/labstack/echo/v4"
 )
 
+type IServer interface {
+	Run() error
+}
+
 type server struct {
-
+	address  string
+	handlers hs.IHandlers
 }
 
-func New() {
-
+func New(address string, handlers hs.IHandlers) IServer {
+	return &server{
+		address:  address,
+		handlers: handlers,
+	}
 }
 
-var _ mdl.IServer = (*server)(nil)
+var _ IServer = (*server)(nil)
 
 func (s *server) Run() error {
 
-	service := srv.New()
-	storage := srg.New()
-	handler := hdl.New(service, storage)
-
 	e := echo.New()
 	gAuth := e.Group("/auth")
-	gAuth.POST("/sign-in", handler.AuthSignIn)
-	gAuth.POST("/sign-up", handler.AuthSignUp)
-	gAuth.POST("/refresh", handler.AuthRefresh)
+	gAuth.POST("/sign-in", s.handlers.AuthSignIn)
+	gAuth.POST("/sign-up", s.handlers.AuthSignUp)
+	gAuth.POST("/refresh", s.handlers.AuthRefresh)
 
 	gApi := e.Group("/api")
-	gApi.POST("/", handler.ApiSave)
-	return e.Start("localhost:80")
+	gApi.POST("/save", s.handlers.ApiSaveAppTokens)
+	gApi.GET("/give", s.handlers.ApiGiveAppTokens)
+
+	return e.Start(s.address)
 }
