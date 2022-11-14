@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
+
+	hs "jwt/pkg/handlers"
 	sr "jwt/pkg/server"
 	ss "jwt/pkg/services"
 	se "jwt/pkg/storage"
-	hs "jwt/pkg/handlers"
 )
 
 func main() {
@@ -13,7 +15,8 @@ func main() {
 	var services ss.IService = ss.New(storage)
 	var handlers hs.IHandlers = hs.New(services)
 
-	var server sr.IServer = sr.New("localhost:80", handlers)
+	ctx := context.Background()
+	var server sr.IServer = sr.New(ctx, "localhost:80", handlers)
 	if err := server.Run(); err != nil {
 		panic(err)
 	}
