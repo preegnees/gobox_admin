@@ -1,9 +1,15 @@
 package server
 
 import (
+	"context"
+	"errors"
+	"net/http"
+	"time"
+
 	hs "jwt/pkg/handlers"
 
 	"github.com/labstack/echo/v4"
+	"golang.org/x/sync/errgroup"
 )
 
 type IServer interface {
@@ -11,12 +17,14 @@ type IServer interface {
 }
 
 type server struct {
+	ctx      context.Context
 	address  string
 	handlers hs.IHandlers
 }
 
-func New(address string, handlers hs.IHandlers) IServer {
+func New(ctx context.Context, address string, handlers hs.IHandlers) IServer {
 	return &server{
+		ctx:      ctx,
 		address:  address,
 		handlers: handlers,
 	}
@@ -36,5 +44,28 @@ func (s *server) Run() error {
 	gApi.POST("/save", s.handlers.ApiSaveAppTokens)
 	gApi.GET("/give", s.handlers.ApiGiveAppTokens)
 
-	return e.Start(s.address)
+	g := new(errgroup.Group)
+
+	g.Go(func() error {
+		if err := e.Start(s.address); err != nil {
+			if errors.Is(err, http.ErrServerClosed) {
+				return nil
+			}
+			return err
+		}
+		return nil
+	})
+
+	select {
+	case <-s.ctx.Done():
+		ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Second)
+		defer cancel()
+		if err := e.Shutdown(ctx); err != nil {
+			return err
+		}
+		if err := g.Wait(); err != nil {
+			return err
+		}
+		return nil
+	}
 }
