@@ -9,6 +9,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+//go:generate mockgen -source=handler.go -destination=mock/mock.go
+
 type IHandlers interface {
 	AuthSignIn(c echo.Context) error
 	AuthSignUp(c echo.Context) error
