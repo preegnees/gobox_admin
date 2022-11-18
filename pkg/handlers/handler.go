@@ -14,6 +14,7 @@ import (
 type IHandlers interface {
 	AuthSignIn(c echo.Context) error
 	AuthSignUp(c echo.Context) error
+	AuthSignOut(c echo.Context) error
 	AuthRefresh(c echo.Context) error
 	ApiSaveAppTokens(c echo.Context) error
 	ApiGiveAppTokens(c echo.Context) error
@@ -44,6 +45,18 @@ func (h *handler) AuthSignIn(c echo.Context) error {
 }
 
 func (h *handler) AuthSignUp(c echo.Context) error {
+	signUp := ms.SignUp{}
+	if err := c.Bind(&signUp); err != nil {
+		return err
+	}
+	err := h.service.SignUp(signUp.Username, signUp.Password, signUp.Email, signUp.EmailCode)
+	if err != nil {
+		return err
+	}
+	return c.NoContent(http.StatusOK)
+}
+
+func (h *handler) AuthSignOut(c echo.Context) error {
 	signUp := ms.SignUp{}
 	if err := c.Bind(&signUp); err != nil {
 		return err

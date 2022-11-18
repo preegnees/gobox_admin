@@ -90,6 +90,20 @@ func (mr *MockIHandlersMockRecorder) AuthSignIn(c interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthSignIn", reflect.TypeOf((*MockIHandlers)(nil).AuthSignIn), c)
 }
 
+// AuthSignOut mocks base method.
+func (m *MockIHandlers) AuthSignOut(c echo.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AuthSignOut", c)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AuthSignOut indicates an expected call of AuthSignOut.
+func (mr *MockIHandlersMockRecorder) AuthSignOut(c interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthSignOut", reflect.TypeOf((*MockIHandlers)(nil).AuthSignOut), c)
+}
+
 // AuthSignUp mocks base method.
 func (m *MockIHandlers) AuthSignUp(c echo.Context) error {
 	m.ctrl.T.Helper()
