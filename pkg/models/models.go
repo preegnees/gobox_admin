@@ -17,10 +17,17 @@ type AppToken struct {
 }
 
 type SaveAppTokens struct {
-	Username int `json:"username"`
-	Tokens   []AppToken
+	Username int        `json:"username"`
+	Tokens   []AppToken `json:"app_tokens"`
 }
 
 type GiveAppTokens struct {
 	Username int `json:"useraname"`
+}
+
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+	AppToken `json:"app_tokens"`
 }
