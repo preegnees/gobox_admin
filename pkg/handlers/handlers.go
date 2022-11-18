@@ -1,47 +1,40 @@
-package handler
+package handlers
 
 import (
 	"net/http"
 
 	ms "jwt/pkg/models"
-	ss "jwt/pkg/services"
 
 	"github.com/labstack/echo/v4"
 )
 
-//go:generate mockgen -source=handler.go -destination=mock/mock.go
-
-type IHandlers interface {
-	AuthSignIn(c echo.Context) error
-	AuthSignUp(c echo.Context) error
-	AuthSignOut(c echo.Context) error
-	AuthRefresh(c echo.Context) error
-	ApiSaveAppTokens(c echo.Context) error
-	ApiGiveAppTokens(c echo.Context) error
-}
-
-type handler struct {
-	service ss.IService
-}
-
-var _ IHandlers = (*handler)(nil)
-
-func New(service ss.IService) IHandlers {
-	return &handler{
-		service: service,
-	}
-}
-
 func (h *handler) AuthSignIn(c echo.Context) error {
+
 	signIn := ms.SignIn{}
 	if err := c.Bind(&signIn); err != nil {
-		return err
+		return c.NoContent(http.StatusBadRequest)
 	}
-	rt, at, err := h.service.SignIn(signIn.Username, signIn.Password)
+
+	if err := c.Validate(&signIn); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	ok, err := h.service.SignIn(signIn)
 	if err != nil {
-		return err
+		return c.NoContent(http.StatusInternalServerError)
 	}
-	return c.JSON(http.StatusOK, map[string]string{"refresh_token": rt, "access_token": at})
+	if !ok {
+		return c.NoContent(http.StatusUnauthorized)
+	}
+
+	at, rt, err := h.jwt.GenerateJWT(signIn.Username, signIn.Role)
+	if err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	return c.JSON(http.StatusOK, ms.AuthTokens{
+		AccessToken:  at,
+		RefreshToken: rt,
+	})
 }
 
 func (h *handler) AuthSignUp(c echo.Context) error {
