@@ -38,6 +38,7 @@ func (s *server) Run() error {
 	gAuth := e.Group("/auth")
 	gAuth.POST("/sign-in", s.handlers.AuthSignIn)
 	gAuth.POST("/sign-up", s.handlers.AuthSignUp)
+	gAuth.POST("/sign-out", s.handlers.AuthSignOut)
 	gAuth.POST("/refresh", s.handlers.AuthRefresh)
 
 	gApi := e.Group("/api")
