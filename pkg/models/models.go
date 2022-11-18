@@ -1,12 +1,13 @@
 package models
 
 type SignIn struct {
-	Username int    `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Role     string `json:"role" validate:"required"`
 }
 
 type SignUp struct {
-	Username  int    `json:"username"`
+	Username  string `json:"username"`
 	Password  string `json:"password"`
 	Email     string `json:"email"`
 	EmailCode int    `json:"email_code"`
@@ -17,12 +18,12 @@ type AppToken struct {
 }
 
 type SaveAppTokens struct {
-	Username int        `json:"username"`
+	Username string     `json:"username"`
 	Tokens   []AppToken `json:"app_tokens"`
 }
 
 type GiveAppTokens struct {
-	Username int `json:"useraname"`
+	Username string `json:"useraname"`
 }
 
 type User struct {
@@ -30,4 +31,9 @@ type User struct {
 	Password string `json:"password"`
 	Email    string `json:"email"`
 	AppToken `json:"app_tokens"`
+}
+
+type AuthTokens struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
