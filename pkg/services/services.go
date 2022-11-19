@@ -1,21 +1,24 @@
 package services
 
 import (
-	ms "jwt/pkg/models"
+	models "jwt/pkg/models"
 )
 
-func (s *service) SignUp(username string, password string, email string, emailCode int) (err error) {
+func (s *service) SignUp(models.SignUp) (err error) {
 	return nil
 }
-func (s *service) SignIn(ms.SignIn) (ok bool, err error) {
+func (s *service) SignIn(models.SignIn) (ok bool, err error) {
 	return false, nil
+}
+func (s *service) SignOut(refreshToken string) (err error) {
+	return nil
 }
 func (s *service) Refresh(refreshToken string) (newRefreshToken string, newAccessToken string, err error) {
 	return "", "", nil
 }
-func (s *service) SaveAppTokens(useraname string, tokens []ms.AppToken) (err error) {
+func (s *service) SaveAppData(useraname string, tokens []models.Tokens) (err error) {
 	return nil
 }
-func (s *service) GiveAppTokens(useraname string) (tokens []ms.AppToken, err error) {
-	return []ms.AppToken{}, nil
+func (s *service) GetAppData(useraname string) (tokens []models.Tokens, err error) {
+	return []models.Tokens{}, nil
 }
