@@ -2,15 +2,16 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
-	ms "jwt/pkg/models"
+	models "jwt/pkg/models"
 
 	"github.com/labstack/echo/v4"
 )
 
 func (h *handler) AuthSignIn(c echo.Context) error {
 
-	signIn := ms.SignIn{}
+	signIn := models.SignIn{}
 	if err := c.Bind(&signIn); err != nil {
 		return c.NoContent(http.StatusBadRequest)
 	}
@@ -31,59 +32,120 @@ func (h *handler) AuthSignIn(c echo.Context) error {
 	if err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	return c.JSON(http.StatusOK, ms.AuthTokens{
-		AccessToken:  at,
-		RefreshToken: rt,
-	})
+
+	cooke := new(http.Cookie)
+	cooke.Name = "refresh_token"
+	cooke.Value = rt
+	cooke.HttpOnly = true
+	c.SetCookie(cooke)
+
+	header := c.Response().Header()
+	header.Add("Authorization", "Bearer "+at)
+
+	return c.NoContent(http.StatusOK)
 }
 
 func (h *handler) AuthSignUp(c echo.Context) error {
-	signUp := ms.SignUp{}
+
+	signUp := models.SignUp{}
 	if err := c.Bind(&signUp); err != nil {
-		return err
+		return c.NoContent(http.StatusBadRequest)
 	}
-	err := h.service.SignUp(signUp.Username, signUp.Password, signUp.Email, signUp.EmailCode)
+
+	if err := c.Validate(&signUp); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	err := h.service.SignUp(signUp)
 	if err != nil {
-		return err
+		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.NoContent(http.StatusOK)
 }
 
 func (h *handler) AuthSignOut(c echo.Context) error {
-	signUp := ms.SignUp{}
-	if err := c.Bind(&signUp); err != nil {
-		return err
+
+	rToken, err := c.Cookie("refresh_token")
+	if err != nil || rToken.Value == "" {
+		return c.NoContent(http.StatusBadRequest)
 	}
-	err := h.service.SignUp(signUp.Username, signUp.Password, signUp.Email, signUp.EmailCode)
+
+	err = h.service.SignOut(rToken.Value)
 	if err != nil {
-		return err
+		return c.NoContent(http.StatusInternalServerError)
 	}
+
+	cooke := new(http.Cookie)
+	cooke.Name = rToken.Name
+	cooke.Value = ""
+	cooke.Expires = time.Unix(0, 0)
+	cooke.HttpOnly = true
+	c.SetCookie(cooke)
+
 	return c.NoContent(http.StatusOK)
 }
 
+// не протестировано
 func (h *handler) AuthRefresh(c echo.Context) error {
-	rft := "test"
-	rt, at, err := h.service.Refresh(rft)
-	if err != nil {
-		return err
+
+	rToken, err := c.Cookie("refresh_token")
+	if err != nil || rToken.Value == "" {
+		return c.NoContent(http.StatusBadRequest)
 	}
-	return c.JSON(http.StatusOK, map[string]string{"refresh_token": rt, "access_token": at})
+
+	// убрать Refresh пихать в redis
+	rt, at, err := h.service.Refresh(rToken.Value)
+	if err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	cooke := new(http.Cookie)
+	cooke.Name = rToken.Name
+	cooke.Value = rt
+	cooke.HttpOnly = true
+	c.SetCookie(cooke)
+
+	header := c.Response().Header()
+	header.Add("Authorization", "Bearer "+at)
+
+	return c.NoContent(http.StatusOK)
 }
 
-func (h *handler) ApiSaveAppTokens(c echo.Context) error {
-	sat := ms.SaveAppTokens{}
-	err := h.service.SaveAppTokens(sat.Username, sat.Tokens)
+func (h *handler) ApiSaveAppData(c echo.Context) error {
+
+	appData := models.AppData{}
+	if err := c.Bind(&appData); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	if err := c.Validate(&appData); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	err := h.service.SaveAppData(appData.Username, appData.Tokens)
 	if err != nil {
-		return err
+		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.NoContent(http.StatusOK)
 }
 
-func (h *handler) ApiGiveAppTokens(c echo.Context) error {
-	at := ms.GiveAppTokens{}
-	ts, err := h.service.GiveAppTokens(at.Username)
-	if err != nil {
-		return err
+func (h *handler) ApiGetAppData(c echo.Context) error {
+
+	appData := models.AppData{}
+	if err := c.Bind(&appData); err != nil {
+		return c.NoContent(http.StatusBadRequest)
 	}
-	return c.JSON(http.StatusOK, map[string][]ms.AppToken{"tokens": ts})
+
+	if err := c.Validate(&appData); err != nil {
+		return c.NoContent(http.StatusBadRequest)
+	}
+
+	tokens, err := h.service.GetAppData(appData.Username)
+	if err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	appData.Tokens = tokens
+
+	return c.JSON(http.StatusOK, appData)
 }
