@@ -4,7 +4,8 @@ import (
 	"context"
 
 	models "jwt/pkg/models"
-	memstorage "jwt/pkg/storage/memstorage"
+	memstorage "jwt/pkg/repository/memstorage"
+	storage "jwt/pkg/repository/storage"
 )
 
 type IStorage interface {
@@ -17,14 +18,16 @@ type IStorage interface {
 	GetAppData(ctx context.Context, username string) (appTokens []models.Tokens, err error)
 }
 
-type storage struct{
-	memstorage memstorage.IRedis
+type repository struct{
+	memstorage memstorage.IMemStorage
+	storage storage.IStorage
 }
 
-var _ IStorage = (*storage)(nil)
+var _ IStorage = (*repository)(nil)
 
-func New(m memstorage.IRedis) IStorage {
-	return &storage{
+func New(m memstorage.IMemStorage, s storage.IStorage) IStorage {
+	return &repository{
 		memstorage: m,
+		storage: s,
 	}
 }

@@ -11,7 +11,7 @@ import (
 
 //go:generate mockgen -source=api.go -destination=mock/mock.go
 
-type IRedis interface {
+type IMemStorage interface {
 	SaveRefreshToken(ctx context.Context, token string) error
 	CheckRefreshToken(ctx context.Context, token string) error
 	DeleteRefreshToken(ctx context.Context, token string) error
@@ -21,7 +21,7 @@ type redis_ struct {
 	client redis.Client
 }
 
-func New() (IRedis, error) {
+func New() (IMemStorage, error) {
 
 	addr := os.Getenv("REDIS_HOST")
 	password := os.Getenv("REDIS_PASSWORD")

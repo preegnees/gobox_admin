@@ -16,6 +16,7 @@ type IService interface {
 	GetAppData(username string) (appTokens []models.Tokens, err error)
 }
 
+// TODO(определить тут интерфейс)
 type service struct {
 	storage repository.IStorage
 }
