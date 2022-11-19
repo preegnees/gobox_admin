@@ -8,7 +8,7 @@ import (
 const SECREST = "test"
 const USERNAME = "my_name"
 
-var jwt_ IJWT = nil 
+var jwt_ IJWT = nil
 
 func TestMain(m *testing.M) {
 	os.Setenv("SECRET", SECREST)
@@ -39,5 +39,5 @@ func TestGetValues(t *testing.T) {
 
 	if myCl.Username != USERNAME {
 		t.Fatal("myCl.Username != USERNAME")
-	} 
+	}
 }

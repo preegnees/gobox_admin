@@ -39,7 +39,7 @@ func (j *jsonWebToken) GenerateJWT(username string, audience string) (aToken str
 	return accessToken, refreshToken, nil
 }
 
-func (j *jsonWebToken) CheckJwt(token string) (bool) {
+func (j *jsonWebToken) CheckJwt(token string) bool {
 
 	if token == "" {
 		return false
