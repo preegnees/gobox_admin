@@ -49,22 +49,6 @@ func (mr *MockIServiceMockRecorder) GetAppData(username interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAppData", reflect.TypeOf((*MockIService)(nil).GetAppData), username)
 }
 
-// Refresh mocks base method.
-func (m *MockIService) Refresh(refreshToken string) (string, string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Refresh", refreshToken)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(string)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// Refresh indicates an expected call of Refresh.
-func (mr *MockIServiceMockRecorder) Refresh(refreshToken interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Refresh", reflect.TypeOf((*MockIService)(nil).Refresh), refreshToken)
-}
-
 // SaveAppData mocks base method.
 func (m *MockIService) SaveAppData(useraname string, appData []models.Tokens) error {
 	m.ctrl.T.Helper()
@@ -77,6 +61,20 @@ func (m *MockIService) SaveAppData(useraname string, appData []models.Tokens) er
 func (mr *MockIServiceMockRecorder) SaveAppData(useraname, appData interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveAppData", reflect.TypeOf((*MockIService)(nil).SaveAppData), useraname, appData)
+}
+
+// SaveRefreshToken mocks base method.
+func (m *MockIService) SaveRefreshToken(refreshToken string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveRefreshToken", refreshToken)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveRefreshToken indicates an expected call of SaveRefreshToken.
+func (mr *MockIServiceMockRecorder) SaveRefreshToken(refreshToken interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveRefreshToken", reflect.TypeOf((*MockIService)(nil).SaveRefreshToken), refreshToken)
 }
 
 // SignIn mocks base method.
