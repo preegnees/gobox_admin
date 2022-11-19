@@ -1,27 +1,28 @@
 package services
 
 import (
-	se "jwt/pkg/storage"
-	ms "jwt/pkg/models"
+	models "jwt/pkg/models"
+	storage "jwt/pkg/storage"
 )
 
 //go:generate mockgen -source=api.go -destination=mock/mock.go
 
 type IService interface {
-	SignIn(ms.SignIn) (ok bool, err error)
-	SignUp(username string, password string, email string, emailCode int) (err error)
+	SignIn(models.SignIn) (ok bool, err error)
+	SignUp(models.SignUp) (err error)
+	SignOut(refreshToken string) (err error)
 	Refresh(refreshToken string) (newRefreshToken string, newAccessToken string, err error)
-	SaveAppTokens(useraname string, appTokens []ms.AppToken) (err error)
-	GiveAppTokens(username string) (appTokens []ms.AppToken, err error)
+	SaveAppData(useraname string, appData []models.Tokens) (err error)
+	GetAppData(username string) (appTokens []models.Tokens, err error)
 }
 
 type service struct {
-	storage se.IStorage
+	storage storage.IStorage
 }
 
 var _ IService = (*service)(nil)
 
-func New(storage se.IStorage) IService {
+func New(storage storage.IStorage) IService {
 	return &service{
 		storage: storage,
 	}
