@@ -34,32 +34,32 @@ func (m *MockIHandlers) EXPECT() *MockIHandlersMockRecorder {
 	return m.recorder
 }
 
-// ApiGiveAppTokens mocks base method.
-func (m *MockIHandlers) ApiGiveAppTokens(c echo.Context) error {
+// ApiGetAppData mocks base method.
+func (m *MockIHandlers) ApiGetAppData(c echo.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ApiGiveAppTokens", c)
+	ret := m.ctrl.Call(m, "ApiGetAppData", c)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ApiGiveAppTokens indicates an expected call of ApiGiveAppTokens.
-func (mr *MockIHandlersMockRecorder) ApiGiveAppTokens(c interface{}) *gomock.Call {
+// ApiGetAppData indicates an expected call of ApiGetAppData.
+func (mr *MockIHandlersMockRecorder) ApiGetAppData(c interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApiGiveAppTokens", reflect.TypeOf((*MockIHandlers)(nil).ApiGiveAppTokens), c)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApiGetAppData", reflect.TypeOf((*MockIHandlers)(nil).ApiGetAppData), c)
 }
 
-// ApiSaveAppTokens mocks base method.
-func (m *MockIHandlers) ApiSaveAppTokens(c echo.Context) error {
+// ApiSaveAppData mocks base method.
+func (m *MockIHandlers) ApiSaveAppData(c echo.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ApiSaveAppTokens", c)
+	ret := m.ctrl.Call(m, "ApiSaveAppData", c)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ApiSaveAppTokens indicates an expected call of ApiSaveAppTokens.
-func (mr *MockIHandlersMockRecorder) ApiSaveAppTokens(c interface{}) *gomock.Call {
+// ApiSaveAppData indicates an expected call of ApiSaveAppData.
+func (mr *MockIHandlersMockRecorder) ApiSaveAppData(c interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApiSaveAppTokens", reflect.TypeOf((*MockIHandlers)(nil).ApiSaveAppTokens), c)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApiSaveAppData", reflect.TypeOf((*MockIHandlers)(nil).ApiSaveAppData), c)
 }
 
 // AuthRefresh mocks base method.

@@ -34,19 +34,19 @@ func (m *MockIService) EXPECT() *MockIServiceMockRecorder {
 	return m.recorder
 }
 
-// GiveAppTokens mocks base method.
-func (m *MockIService) GiveAppTokens(username string) ([]models.AppToken, error) {
+// GetAppData mocks base method.
+func (m *MockIService) GetAppData(username string) ([]models.Tokens, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GiveAppTokens", username)
-	ret0, _ := ret[0].([]models.AppToken)
+	ret := m.ctrl.Call(m, "GetAppData", username)
+	ret0, _ := ret[0].([]models.Tokens)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GiveAppTokens indicates an expected call of GiveAppTokens.
-func (mr *MockIServiceMockRecorder) GiveAppTokens(username interface{}) *gomock.Call {
+// GetAppData indicates an expected call of GetAppData.
+func (mr *MockIServiceMockRecorder) GetAppData(username interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GiveAppTokens", reflect.TypeOf((*MockIService)(nil).GiveAppTokens), username)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAppData", reflect.TypeOf((*MockIService)(nil).GetAppData), username)
 }
 
 // Refresh mocks base method.
@@ -65,18 +65,18 @@ func (mr *MockIServiceMockRecorder) Refresh(refreshToken interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Refresh", reflect.TypeOf((*MockIService)(nil).Refresh), refreshToken)
 }
 
-// SaveAppTokens mocks base method.
-func (m *MockIService) SaveAppTokens(useraname string, appTokens []models.AppToken) error {
+// SaveAppData mocks base method.
+func (m *MockIService) SaveAppData(useraname string, appData []models.Tokens) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveAppTokens", useraname, appTokens)
+	ret := m.ctrl.Call(m, "SaveAppData", useraname, appData)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SaveAppTokens indicates an expected call of SaveAppTokens.
-func (mr *MockIServiceMockRecorder) SaveAppTokens(useraname, appTokens interface{}) *gomock.Call {
+// SaveAppData indicates an expected call of SaveAppData.
+func (mr *MockIServiceMockRecorder) SaveAppData(useraname, appData interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveAppTokens", reflect.TypeOf((*MockIService)(nil).SaveAppTokens), useraname, appTokens)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveAppData", reflect.TypeOf((*MockIService)(nil).SaveAppData), useraname, appData)
 }
 
 // SignIn mocks base method.
@@ -94,16 +94,30 @@ func (mr *MockIServiceMockRecorder) SignIn(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignIn", reflect.TypeOf((*MockIService)(nil).SignIn), arg0)
 }
 
-// SignUp mocks base method.
-func (m *MockIService) SignUp(username, password, email string, emailCode int) error {
+// SignOut mocks base method.
+func (m *MockIService) SignOut(refreshToken string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SignUp", username, password, email, emailCode)
+	ret := m.ctrl.Call(m, "SignOut", refreshToken)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SignOut indicates an expected call of SignOut.
+func (mr *MockIServiceMockRecorder) SignOut(refreshToken interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignOut", reflect.TypeOf((*MockIService)(nil).SignOut), refreshToken)
+}
+
+// SignUp mocks base method.
+func (m *MockIService) SignUp(arg0 models.SignUp) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SignUp", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SignUp indicates an expected call of SignUp.
-func (mr *MockIServiceMockRecorder) SignUp(username, password, email, emailCode interface{}) *gomock.Call {
+func (mr *MockIServiceMockRecorder) SignUp(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignUp", reflect.TypeOf((*MockIService)(nil).SignUp), username, password, email, emailCode)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignUp", reflect.TypeOf((*MockIService)(nil).SignUp), arg0)
 }
