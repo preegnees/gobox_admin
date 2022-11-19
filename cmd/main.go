@@ -8,7 +8,7 @@ import (
 	middlewares "jwt/pkg/middlewares"
 	server "jwt/pkg/server"
 	services "jwt/pkg/services"
-	storage "jwt/pkg/storage"
+	repository "jwt/pkg/repository"
 	jwt "jwt/pkg/utils/jwt"
 )
 
@@ -18,7 +18,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	var storage_ storage.IStorage = storage.New()
+
+	var storage_ repository.IStorage = repository.New() // TODO()
 	var services_ services.IService = services.New(storage_)
 	var handlers_ handlers.IHandlers = handlers.New(services_, jwt_)
 	var middlewares_ middlewares.IMiddleware = middlewares.New(jwt_)
