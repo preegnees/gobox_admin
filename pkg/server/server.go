@@ -6,9 +6,13 @@ import (
 	"net/http"
 	"time"
 
-	hs "jwt/pkg/handlers"
+	handlers "jwt/pkg/handlers"
+	middlewares "jwt/pkg/middlewares"
+	validator_ "jwt/pkg/utils/validator"
 
+	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -17,16 +21,18 @@ type IServer interface {
 }
 
 type server struct {
-	ctx      context.Context
-	address  string
-	handlers hs.IHandlers
+	ctx         context.Context
+	address     string
+	handlers    handlers.IHandlers
+	middlewares middlewares.IMiddleware
 }
 
-func New(ctx context.Context, address string, handlers hs.IHandlers) IServer {
+func New(ctx context.Context, address string, handlers handlers.IHandlers, middlewares middlewares.IMiddleware) IServer {
 	return &server{
-		ctx:      ctx,
-		address:  address,
-		handlers: handlers,
+		ctx:         ctx,
+		address:     address,
+		handlers:    handlers,
+		middlewares: middlewares,
 	}
 }
 
@@ -35,6 +41,13 @@ var _ IServer = (*server)(nil)
 func (s *server) Run() error {
 
 	e := echo.New()
+
+	e.Validator = &validator_.CustomValidator{
+		Validator: validator.New(),
+	}
+
+	e.Use(middleware.Logger())
+
 	gAuth := e.Group("/auth")
 	gAuth.POST("/sign-in", s.handlers.AuthSignIn)
 	gAuth.POST("/sign-up", s.handlers.AuthSignUp)
@@ -42,8 +55,9 @@ func (s *server) Run() error {
 	gAuth.POST("/refresh", s.handlers.AuthRefresh)
 
 	gApi := e.Group("/api")
-	gApi.POST("/save", s.handlers.ApiSaveAppTokens)
-	gApi.GET("/give", s.handlers.ApiGiveAppTokens)
+	gApi.Use(s.middlewares.CheckJWT)
+	gApi.POST("/save", s.handlers.ApiSaveAppData)
+	gApi.GET("/get", s.handlers.ApiGetAppData)
 
 	g := new(errgroup.Group)
 
