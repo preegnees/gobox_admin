@@ -7,33 +7,26 @@ type SignIn struct {
 }
 
 type SignUp struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	Email     string `json:"email"`
-	EmailCode int    `json:"email_code"`
+	Username  string `json:"username" validate:"required"`
+	Password  string `json:"password" validate:"required"`
+	Role      string `json:"role" validate:"required"`
+	Email     string `json:"email" validate:"required"`
+	EmailCode int    `json:"email_code" validate:"required"`
 }
 
-type AppToken struct {
-	Token string `json:"token"`
+type Tokens struct {
+	Token  string `json:"token"`
+	Action int    `json:"action"` // 0 default, add 1, remove 2
 }
 
-type SaveAppTokens struct {
-	Username string     `json:"username"`
-	Tokens   []AppToken `json:"app_tokens"`
-}
-
-type GiveAppTokens struct {
-	Username string `json:"useraname"`
+type AppData struct {
+	Username string   `json:"username" validate:"required"`
+	Tokens   []Tokens `json:"tokens"`
 }
 
 type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
-	AppToken `json:"app_tokens"`
-}
-
-type AuthTokens struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+	Tokens   `json:"tokens"`
 }
