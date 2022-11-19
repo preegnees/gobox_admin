@@ -93,20 +93,20 @@ func (h *handler) AuthRefresh(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	// убрать Refresh пихать в redis
-	rt, at, err := h.service.Refresh(rToken.Value)
+	// убрать Refresh пихать в redis // тут где то создать токены и сохарнить
+	err = h.service.SaveRefreshToken(rToken.Value)
 	if err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
 	cooke := new(http.Cookie)
 	cooke.Name = rToken.Name
-	cooke.Value = rt
+	// cooke.Value = rt
 	cooke.HttpOnly = true
 	c.SetCookie(cooke)
 
-	header := c.Response().Header()
-	header.Add("Authorization", "Bearer "+at)
+	// header := c.Response().Header()
+	// header.Add("Authorization", "Bearer "+at)
 
 	return c.NoContent(http.StatusOK)
 }
