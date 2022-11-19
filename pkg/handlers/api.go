@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	ss "jwt/pkg/services"
-	jt "jwt/pkg/utils/jwt"
+	services "jwt/pkg/services"
+	jwt "jwt/pkg/utils/jwt"
 
 	"github.com/labstack/echo/v4"
 )
@@ -14,18 +14,19 @@ type IHandlers interface {
 	AuthSignUp(c echo.Context) error
 	AuthSignOut(c echo.Context) error
 	AuthRefresh(c echo.Context) error
-	ApiSaveAppTokens(c echo.Context) error
-	ApiGiveAppTokens(c echo.Context) error
+	ApiSaveAppData(c echo.Context) error
+	ApiGetAppData(c echo.Context) error
 }
 
 type handler struct {
-	service ss.IService
-	jwt     jt.IJWT
+	service services.IService
+	jwt     jwt.IJWT
+	
 }
 
 var _ IHandlers = (*handler)(nil)
 
-func New(service ss.IService, jwt jt.IJWT) IHandlers {
+func New(service services.IService, jwt jwt.IJWT) IHandlers {
 
 	return &handler{
 		service: service,
