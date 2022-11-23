@@ -1,8 +1,10 @@
 package dto
 
 type DTOUser struct {
-	Username string
-	Password string
+	Username     string
+	PasswordHash string
+	UserRole     string
+	Email        string
 }
 
 type DTOEmail struct {
