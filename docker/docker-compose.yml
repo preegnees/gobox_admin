@@ -1,16 +1,18 @@
-version: '3.8'
+version: "3"
+
+networks:
+  postgres:
+    driver: bridge
+volumes:
+  init: 
+  data: 
 
 services:
-  cache:
-    image: redis:6.2-alpine
-    restart: always
-    ports:
-      - '6379:6379'
-
   postgres:
-    image: postgres:latest
+    container_name: my_db
+    image: postgres:15
+    restart: always
     environment:
-      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     healthcheck:
@@ -20,4 +22,19 @@ services:
       retries: 5
       start_period: 1s
     ports:
-      - "5431:5432"
+      - "5431:5432" # почему то он хочет, чтобы в pgadmin port = 5432
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/postgresql/data
+      # - type: bind
+        # source: ./init
+        # target: /docker-entrypoint-initdb.d
+        # target: /home/init.sh
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@root.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "8080:80"
